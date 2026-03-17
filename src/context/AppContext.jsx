@@ -21,6 +21,17 @@ export const AppProvider = ({ children }) => {
     return saved ? JSON.parse(saved) : [];
   });
 
+  const [isFirstVisit, setIsFirstVisit] = useState(() => {
+    const saved = localStorage.getItem('salaryCalculatorFirstVisit');
+    return saved !== null ? JSON.parse(saved) : true;
+  });
+
+  const [calculationMode, setCalculationMode] = useState(() => {
+    const saved = localStorage.getItem('salaryCalculatorMode');
+    // null, 'individual', or 'file'
+    return saved ? JSON.parse(saved) : null;
+  });
+
   // Persistir cambios en LocalStorage cuando cambian
   useEffect(() => {
     localStorage.setItem('salaryCalculatorSettings', JSON.stringify(settings));
@@ -30,8 +41,21 @@ export const AppProvider = ({ children }) => {
     localStorage.setItem('salaryCalculatorData', JSON.stringify(salaryData));
   }, [salaryData]);
 
+  useEffect(() => {
+    localStorage.setItem('salaryCalculatorFirstVisit', JSON.stringify(isFirstVisit));
+  }, [isFirstVisit]);
+
+  useEffect(() => {
+    localStorage.setItem('salaryCalculatorMode', JSON.stringify(calculationMode));
+  }, [calculationMode]);
+
   return (
-    <AppContext.Provider value={{ settings, setSettings, salaryData, setSalaryData }}>
+    <AppContext.Provider value={{ 
+      settings, setSettings, 
+      salaryData, setSalaryData,
+      isFirstVisit, setIsFirstVisit,
+      calculationMode, setCalculationMode
+    }}>
       {children}
     </AppContext.Provider>
   );
